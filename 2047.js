@@ -1,85 +1,121 @@
-// ScaleVars
-const canvasWidth = 500
-const canvasHeight = canvasWidth
-const borderScale = 0.031
+// scaleVars
+const canvasWidth = 500;
+const canvasHeight = canvasWidth;
+const borderScale = 0.031;
 
 // squareVars
-let border = (borderScale * canvasHeight)
-let innersquarequad = (((1-borderScale)*canvasWidth)/4)
+let border = borderScale * canvasHeight;
+let innersquarequad = ((1 - borderScale) * canvasWidth) / 4;
 
-// Arrays
-let grid = []
-let antigrid = []
-let tile1 = []
+// arrays
+let grid = [];
+let antigrid = [];
+let tile1 = [];
+let ranAntigrid;
 
 function setup() {
   createCanvas(canvasWidth, canvasHeight);
-  frameRate(4);
-  boardVectors()
-  noLoop()
+  frameRate(60);
+  boardVectors();
+  noLoop();
+  console.log(antigrid)
+  console.log(grid)
 }
 
 function draw() {
-  drawBoard()
-  draw1()
-  draw3()
-  //console.log(antigrid)
+  drawBoard();
+  draw1();
 }
 
 // grid[i].x is x coord, .y is y coord, .x is width/height
 function boardVectors() {
-  grid.push(new p5.Vector(0,0))
-  antigrid.push(new p5.Vector(0,0))
   for (let i = 0; i < 4; i++) {
-    grid.push(new p5.Vector((border), (border + innersquarequad * i), (innersquarequad) - (border)))
-    antigrid.push(new p5.Vector((border), (border + innersquarequad * i), (innersquarequad) - (border)))
+    grid.push(
+      new p5.Vector(
+        border,
+        border + innersquarequad * i,
+        innersquarequad - border
+      )
+    );
   }
   for (let i = 0; i < 4; i++) {
-    grid.push(new p5.Vector((border + innersquarequad), (border + innersquarequad * i), (innersquarequad) - (border)))
-    antigrid.push(new p5.Vector((border + innersquarequad), (border + innersquarequad * i), (innersquarequad) - (border)))
+    grid.push(
+      new p5.Vector(
+        border + innersquarequad,
+        border + innersquarequad * i,
+        innersquarequad - border
+      )
+    );
   }
   for (let i = 0; i < 4; i++) {
-    grid.push(new p5.Vector((border + innersquarequad * 2), (border + innersquarequad * i), (innersquarequad) - (border)))
-    antigrid.push(new p5.Vector((border + innersquarequad * 2), (border + innersquarequad * i), (innersquarequad) - (border)))
+    grid.push(
+      new p5.Vector(
+        border + innersquarequad * 2,
+        border + innersquarequad * i,
+        innersquarequad - border
+      )
+    );
   }
   for (let i = 0; i < 4; i++) {
-    grid.push(new p5.Vector((border + innersquarequad * 3), (border + innersquarequad * i), (innersquarequad) - (border)))
-    antigrid.push(new p5.Vector((border + innersquarequad * 3), (border + innersquarequad * i), (innersquarequad) - (border)))
+    grid.push(
+      new p5.Vector(
+        border + innersquarequad * 3,
+        border + innersquarequad * i,
+        innersquarequad - border
+      )
+    );
+  }
+  for (let i = 0; i < 16; i++) {
+    antigrid.push(
+      new p5.Vector(
+        grid[i].x,
+        grid[i].y,
+        grid[i].z
+      )
+    )
   }
 }
 
 function drawBoard() {
-  background("#bbada0")
-  fill("#ccc1b4")
-  noStroke()
-  for (let i = 1; i < 17; i++) { // background grid
-    rect(grid[i].x, grid[i].y, grid[i].z, grid[i].z, 3.8)
+  background("#bbada0");
+  fill("#ccc1b4");
+  noStroke();
+  for (let i = 0; i < 16; i++) {
+    // background grid
+    rect(grid[i].x, grid[i].y, grid[i].z, grid[i].z, 3.8);
   }
+}
+
+function RandomizeAntiGrid() {
+  if (antigrid.length === 0) {
+    fill("red")
+    textSize(32)
+    text("you lose LLL", canvasWidth/3, canvasWidth/2)
+  } else {
+  ranAntigrid = round(random(0, antigrid.length - 1));
+  console.log(ranAntigrid);
+  console.log(antigrid[ranAntigrid])
+}
 }
 
 function draw1() {
-  let random1tile1 = round(random(1,16))
-  let random1tile2 = round(random(1,16))
-  if (random1tile1 === random1tile2) {
-    while (random1tile1 === random1tile2) {
-      random1tile2 = round(random(1,16))
-    }
-  }
-  let newrandom1tile =
-  tile1.push(new p5.Vector(grid[random1tile1].x, grid[random1tile1].y, grid[random1tile1].z))
-  tile1.push(new p5.Vector(grid[random1tile2].x, grid[random1tile2].y, grid[random1tile2].z))
+  RandomizeAntiGrid();
+
+  console.log("current antigrid length " + antigrid.length);
+
+  tile1.push(new p5.Vector(antigrid[ranAntigrid].x, antigrid[ranAntigrid].y, antigrid[ranAntigrid].z));
+
   for (let i = 0; i < tile1.length; i++) {
-  fill("#ede5da")
-  rect(tile1[i].x, tile1[i].y, tile1[i].z, tile1[i].z, 3.8)
-  fill("#776e64")
-  text('1', tile1[i].x + (tile1[i].z/2), tile1[i].y + (tile1[i].z/2));
-}
-  tile1.pop()
-  tile1.pop()
-}
-
-function draw3() {
-
+    fill("#ede5da");
+    rect(tile1[i].x, tile1[i].y, tile1[i].z, tile1[i].z, 3.8);
+    fill("#776e64");
+    text("1", tile1[i].x + tile1[i].z / 2, tile1[i].y + tile1[i].z / 2);
+  }
+  //tile1.pop();
+  antigrid.splice(ranAntigrid, 1)
+  if (antigrid.length === 0) {
+    RandomizeAntiGrid()
+  }
 }
 
 function mousePressed() {
