@@ -12,6 +12,7 @@ let grid = [];
 let antigrid = [];
 let tile1 = [];
 let ranAntigrid;
+let lost = "FALSE";
 
 function setup() {
   createCanvas(canvasWidth, canvasHeight);
@@ -91,6 +92,7 @@ function RandomizeAntiGrid() {
     fill("red")
     textSize(32)
     text("you lose LLL", canvasWidth/3, canvasWidth/2)
+    lost = "TRUE"
   } else {
   ranAntigrid = round(random(0, antigrid.length - 1));
   console.log(ranAntigrid);
@@ -99,6 +101,7 @@ function RandomizeAntiGrid() {
 }
 
 function draw1() {
+  if (lost === "FALSE") {
   RandomizeAntiGrid();
 
   console.log("current antigrid length " + antigrid.length);
@@ -117,7 +120,10 @@ function draw1() {
     RandomizeAntiGrid()
   }
 }
+}
 
 function mousePressed() {
+  if (lost === "FALSE") {
   redraw();
+}
 }
